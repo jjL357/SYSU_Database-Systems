@@ -1,0 +1,26 @@
+<!-- /templates/read_preview.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Read Preview</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f8f8;
+            margin: 20px;
+        }
+
+        p {
+            color: #333;
+            font-size: 1.2em;
+            line-height: 1.6em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Read Preview</h1>
+    <p>{{ preview_content|linebreaks }}</p>
+</body>
+</html>

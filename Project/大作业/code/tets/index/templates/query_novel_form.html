@@ -1,0 +1,195 @@
+<!-- templates/query_novel_form.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 引入 Bootstrap 样式表 -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 50px 0;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        video {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1;
+            transform: translateX(-50%) translateY(-50%);
+            background: linear-gradient(45deg, #9fd5eb, #5f8ff6);
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            z-index: 1;
+        }
+
+        form {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            z-index: 1;
+            max-width: 300px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .search-icon {
+            margin-right: 5px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .animated {
+            animation: fadeIn 0.8s ease;
+        }
+
+        .loading-icon {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .loading-icon i {
+            font-size: 24px;
+            animation: rotate 1s linear infinite;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50%;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+            position: relative;
+            background-color: #888;
+            opacity: 1.5;
+        }
+
+        .button:hover {
+            background-color: #666;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            opacity: 1;
+        }
+
+        .button .tooltip {
+            display: none;
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: #fff;
+            padding: 5px;
+            border-radius: 5px;
+            white-space: nowrap;
+        }
+
+        .button:hover .tooltip {
+            display: block;
+        }
+
+        .button-home {
+            position: fixed;
+            left: 20px;
+            top: 20px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            z-index: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <video autoplay muted loop>
+        <!-- 替换视频文件的路径和格式 -->
+        <source src="{% static 'img/185096 (Original).mp4' %}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <h2 class="animated">查询小说</h2>
+    <a href="http://127.0.0.1:8000/home" class="button button-home">
+        <i class="fa fa-home "></i>
+        <span class="tooltip">返回主页</span>
+    </a>
+    <form method="post" action="{% url 'query_novel_form' %}">
+        {% csrf_token %}
+        <label for="novelTitle">小说标题:</label>
+        <input type="text" id="novelTitle" name="title" required>
+        <button type="submit"><i class="fas fa-search search-icon"></i>搜索</button>
+    </form>
+</body>
+
+</html>

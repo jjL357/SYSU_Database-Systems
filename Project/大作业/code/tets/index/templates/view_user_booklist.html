@@ -1,0 +1,148 @@
+<!-- templates/view_user_booklist.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booklist for {{ user_name }}</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        li {
+            width: 30%;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            margin: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+            overflow: hidden;
+            border-radius: 5px;
+            text-align: center; /* Center-align the text */
+        }
+
+        li:hover {
+            transform: scale(1.05);
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .delete-form {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .delete-form button {
+            padding: 12px 20px; /* Larger padding for the button */
+            font-size: 1em; /* Larger font size */
+            background-color: #4caf50;  /* Use the same green color as the original page */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 20px; /* Increased margin for spacing */
+        }
+
+        .delete-form input {
+            display: none;
+        }
+
+        .delete-form label {
+            padding: 12px 20px; /* Larger padding for the label */
+            font-size: 1em; /* Larger font size */
+            background-color: #4caf50;  /* Use the same green color as the original page */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .book-cover {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            transition: transform 0.3s ease-in-out;
+            border-radius: 5px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .book-cover:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+  <h1>Booklist for  {{ request.user.username }}</h1>
+  {% block content %}
+    {% if user_booklist %}
+      {% if books_in_booklist %}
+        <ul>
+          {% for book1 in books_in_booklist %}
+            {% for book2 in book %}
+              {% if book1 == book2.book_id %}
+                <li>
+                  <img src="{{ book2.picture }}" alt="{{ book2.book_name }}" class="book-cover">
+                  <h2>{{ book2.book_name }}</h2>
+                  <p>Categories: {{ book2.categories }}</p>
+                  <p>Status: {{ book2.status }}</p>
+                  <p>Introduction: {{ book2.introduction }}</p>
+
+                  <!-- Adding the delete book form -->
+                  <div class="delete-form">
+                    <form action="{% url 'read_preview' book_id=book2.book_id %}" method="get" target="_blank">
+                      <button type="submit">Read Preview</button>
+                    </form>
+
+
+
+                    <form method="post" action="{% url 'view_user_booklist' user_id=user_id %}">
+                      {% csrf_token %}
+                      <input type="hidden" name="delete_book_id" value="{{ book2.book_id }}">
+                      <button type="submit" class="delete-button">Delete Book From Booklist</button>
+                    </form>
+                  </div>
+                  <!-- Other book details -->
+                </li>
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>Your booklist is empty.</p>
+      {% endif %}
+    {% else %}
+      <p>Your booklist is empty.</p>
+    {% endif %}
+  {% endblock %}
+</body>
+</html>

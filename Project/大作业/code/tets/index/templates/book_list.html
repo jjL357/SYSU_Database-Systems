@@ -1,0 +1,167 @@
+<!-- templates/book_list.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book List</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            padding: 20px;
+            background-color: #4caf50;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .view-booklist-link {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            text-decoration: none;
+        }
+
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 1.2em;
+            margin-right: 10px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        li {
+            width: 30%;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            margin: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+            overflow: hidden;
+            border-radius: 5px;
+            text-align: center; /* Center-align the text */
+        }
+
+        li:hover {
+            transform: scale(1.05);
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            transition: transform 0.3s ease-in-out;
+            border-radius: 5px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        img:hover {
+            transform: scale(1.1);
+        }
+
+        h2 {
+            color: #333;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome {{ request.user.username }} to Novel Haven
+        <!-- 将查看书单的链接移到右上角 -->
+        <a class="view-booklist-link" href="{% url 'view_user_booklist' user_id=request.user.id %}">View My Booklist</a>
+    </h1>
+    <form action="{% url 'book_list' %}" method="get">
+        <label for="book_search">Search by book name:</label>
+        <input type="text" id="book_search" name="book_search" required>
+        <button type="submit">Search Book</button>
+    </form>
+
+    <form action="{% url 'author_list' %}" method="get">
+        <label for="author_search">Search by author name:</label>
+        <input type="text" id="author_search" name="author_search" required>
+        <button type="submit">Search Author</button>
+    </form>
+
+    <ul>
+        {% for book in books %}
+            <li>
+                <img src="{{ book.picture }}" alt="{{ book.book_name }}">
+                <h2>{{ book.book_name }}</h2>
+                <p>Categories: {{ book.categories }}</p>
+                <p>Status: {{ book.status }}</p>
+                <p>Introduction: {{ book.introduction }}</p>
+    
+                <!-- 添加试读按钮 -->
+              
+                <form action="{% url 'read_preview' book_id=book.book_id %}" method="get" target="_blank">
+                    <button type="submit">Read Preview</button>
+                </form>
+             
+    
+                <form action="{% url 'add_to_booklist' user_id=request.user.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="book_id" value="{{ book.book_id }}">
+                    <button type="submit">Add to My Booklist</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+    <ul>
+        {% for author in authors %}
+            <li>
+                <!-- 显示作者信息的代码 -->
+                Author: {{ author.author_name }}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

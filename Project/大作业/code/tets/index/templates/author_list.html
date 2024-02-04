@@ -1,0 +1,174 @@
+<!-- templates/author_list.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Author List</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 1.2em;
+            margin-right: 10px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        li {
+            width: 45%; /* Increase width for better visibility */
+            background-color: #fff;
+            border: 1px solid #ddd;
+            margin: 20px; /* Increase margin for better spacing */
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+            overflow: hidden;
+            border-radius: 5px;
+        }
+
+        li:hover {
+            transform: scale(1.05);
+        }
+
+        h2 {
+            color: #333;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .books-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .book-item {
+            width: 45%;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            margin: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+            overflow: hidden;
+            border-radius: 5px;
+        }
+
+        .book-item:hover {
+            transform: scale(1.05);
+        }
+
+        .book-item img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            transition: transform 0.3s ease-in-out;
+            border-radius: 5px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .book-item img:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Author List</h1>
+    <form action="{% url 'author_list' %}" method="get">
+        <label for="author_search">Search by author name:</label>
+        <input type="text" id="author_search" name="author_search" required>
+        <button type="submit">Search</button>
+    </form>
+    <ul>
+        {% for author in authors %}
+            <li>
+                <p>Author: {{ author.author_name }}</p>
+                <p>Books:</p>
+                <ul class="books-list">
+                    {% for author_book in author_books %}
+                        {% if author_book.author_id == author.author_id %}
+                            {% for book in books %}
+                                {% if book.book_id == author_book.book_id %}
+                                    <li class="book-item">
+                                        <img src="{{ book.picture }}" alt="{{ book.book_name }}">
+                                        <h2>{{ book.book_name }}</h2>
+                                        <p>Categories: {{ book.categories }}</p>
+                                        <p>Status: {{ book.status }}</p>
+                                        <p>Introduction: {{ book.introduction }}</p>
+                            
+                                        <!-- 添加试读按钮 -->
+                                        <form action="{% url 'read_preview' book_id=book.book_id %}" method="get" target="_blank">
+                                            <button type="submit">Read Preview</button>
+                                        </form>
+                                    
+                                        <form action="{% url 'add_to_booklist' user_id=request.user.id %}" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="book_id" value="{{ book.book_id }}">
+                                            <button type="submit">Add to My Booklist</button>
+                                        </form>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
